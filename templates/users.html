@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}
+Users
+{% endblock %}
+
+{% block heading %}
+Users
+{% endblock %}
+
+{% block content %}
+    <table class="table table-hover mt-3">
+
+        <thead>
+        <tr class="text-center table-primary">
+<!--            <th colspan=5 scope="col"><h3>Users</h3></th>-->
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if users|length > 0 %}
+            {% for user in users: %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                {% if user.active == "True" %}
+                    <td><span class="badge badge-success p-2">Active</span></td>
+                {% else %}
+                    <td><span class="badge badge-danger">Inactive</span></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3" class="text-center text-danger">No User Found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

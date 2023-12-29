@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+Database Tables
+{% endblock %}
+{% block heading %}
+Database Tables
+{% endblock %}
+{% block content %}
+<main class="form-signin w-100 m-auto" id="db_form">
+  <form method="POST" class="form-inline">
+    <div class="form-floating m-2">
+            {{form.database(class="form-control m-2")}}
+            {{form.submit(class="form-control m-2 btn btn-info")}}
+    </div>
+        </form>
+</main>
+
+{% include 'tables.html' %}
+{% endblock %}

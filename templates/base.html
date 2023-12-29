@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/font-awesome.min.css')}}">
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+    <title>
+        {% block title %}
+
+        {% endblock %}
+    </title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="">DB MGT System</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto ">
+            <li class="nav-item active">
+                <a class="nav-link" href="">Dashboards <span class="sr-only">(current)</span></a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Members</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Manual Inputs</a>
+            </li>
+        </ul>
+
+        <a class="text text-white mr-5">Welcome, {{ current_user.name }}</a>
+        <a href="{{url_for('auth.register')}}" class="my-2 my-lg-0 btn btn-success">Create User</a>
+        <a href="{{url_for('auth.logout')}}" class="my-2 my-lg-0 btn btn-info ml-5 mr-2">Logout</a>
+
+
+
+
+
+
+
+
+
+    </div>
+</nav>
+
+
+<!-- Contents -->
+<!--<div class="container">-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+               <div class="alert text-center alert-{{ category }}">
+                   <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+                   {{ message }}
+               </div>
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+    <h3 class="text-center font-weight-bold mt-4">
+        {% block heading %}
+        {% endblock %}
+    </h3>
+    <div class="col-md-12 mt-4">
+
+        {% block content %}
+        {% endblock %}<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    </div>
+
+
+    <!-- Footer Section -->
+    <!-- Footer -->
+    <section id="footer">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-5">
+                    <ul class="list-unstyled list-inline social text-center">
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                        <li class="list-inline-item"><a href="#" target="_blank"><i class="fa fa-envelope"></i></a></li>
+                    </ul>
+                </div>
+                </hr>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
+
+                    <p class="h6">&copy All right Reversed.<a class="text-green ml-2" href="#" target="_blank">Port Scanner</a></p>
+                </div>
+                </hr>
+            </div>
+        </div>
+    </section>
+    <!-- ./Footer -->
+
+    <!-- JavaScript -->
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{{url_for('static', filename='js/jquery-3.4.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{url_for('static', filename='js/script.js')}}"></script>
+
+
+
+</body>
+</html>

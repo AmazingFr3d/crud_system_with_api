@@ -1,0 +1,20 @@
+    {% if current_user.is_authenticated %}
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto ">
+            <li class="nav-item active">
+                <a class="nav-link" href="">Dashboards <span class="sr-only">(current)</span></a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Members</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Manual Inputs</a>
+            </li>
+        </ul>
+
+        <a class="text text-white mr-5">Welcome, {{ current_user.name }}</a>
+        <a href="{{url_for('auth.register')}}" class="my-2 my-lg-0 btn btn-success">Create User</a>
+        <a href="{{url_for('auth.logout')}}" class="my-2 my-lg-0 btn btn-info ml-5 mr-2">Logout</a>
+
+    {% endif %}

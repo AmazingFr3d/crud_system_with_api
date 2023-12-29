@@ -1,0 +1,26 @@
+<table class="table table-hover mt-3">
+
+        <thead>
+        <tr class="text-center table-primary">
+            <th colspan=3 scope="col"><h4>{{db}}</h4></th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if leads|length > 0 %}
+            {% for lead in lead: %}
+            <tr>
+                <td>{{ lead.first_name }} {{ lead.last_name }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3" class="text-center text-danger">No Lead Found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+Register
+{% endblock %}
+
+{% block heading %}
+
+{% endblock %}
+
+{% block content %}
+
+
+<main class="form-signin w-100 m-auto">
+  <form method="POST">
+    {{ form.hidden_tag()}}
+    <h3 class="h3 mb-3 fw-normal text-center">Create a User</h3>
+    <div class="form-floating p-2">
+
+
+      {{form.name(class="form-control mb-3", placeholder="Name")}}
+
+      {{form.email(class="form-control mb-3", placeholder="Email")}}
+
+      {{form.password(class="form-control mb-3", placeholder="Password")}}
+
+      {{form.confirm(class="form-control mb-3", placeholder="Confirm Password")}}
+
+      {{form.role( placeholder="Type", class="form-control mb-3")}}
+      <div class="text-center">
+        {{form.submit(class="w-50 btn btn-primary py-2") }}
+      </div>
+    </div>
+  </form>
+</main>
+
+
+
+{% endblock %}
