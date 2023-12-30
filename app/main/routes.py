@@ -25,7 +25,7 @@ def dashboard():
             return render_template("index.html",data_set=data_set, form=form, db=data)
 
         elif data == "refunds":
-            data_set = Transactions.query.filter_by(transaction_type="refund")
+            data_set = Transactions.query.filter_by(transaction_type="refund").all()
             return render_template("index.html",data_set=data_set, form=form, db=data)
 
         elif data == "webinar_funnel":

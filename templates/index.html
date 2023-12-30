@@ -15,5 +15,18 @@ Database Tables
         </form>
 </main>
 
-{% include 'tables.html' %}
+{% if db == "leads" %}
+    {% include 'includes/leads_table.html' %}
+{% elif db == "transactions"%}
+    {% include 'includes/transactions_table.html' %}
+{% elif db == "refunds"%}
+    {% include 'includes/transactions_table.html' %}
+{% elif db == "members" %}
+    {% include 'includes/members_table.html' %}
+{% elif db == "webinar_funnel" %}
+    {% include 'includes/webinar_table.html' %}
+{% else %}
+    {% include 'includes/leads_table.html' %}
+{%endif%}
+
 {% endblock %}

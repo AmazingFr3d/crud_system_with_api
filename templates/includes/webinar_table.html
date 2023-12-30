@@ -1,0 +1,51 @@
+<table class="table table-hover mt-3">
+
+        <thead>
+        <tr class="text-center table-primary text-capitalize">
+            <th colspan=3 scope="col"><h4>{{db}} [{{data_set|length}}]</h4></th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">Date</th>
+            <th scope="col">Adspend</th>
+            <th scope="col">Impressions</th>
+            <th scope="col">CPM</th>
+            <th scope="col">Clicks</th>
+            <th scope="col">CPR</th>
+            <th scope="col">Leads</th>
+            <th scope="col">LP_CVR</th>
+            <th scope="col">CPl</th>
+            <th scope="col">WA</th>
+            <th scope="col">WAR</th>
+            <th scope="col">CPWAR</th>
+            <th scope="col">Sales</th>
+            <th scope="col">CPA</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if data_set|length > 0 %}
+            {% for data in data_set: %}
+            <tr>
+                <td>{{ data_set.date }}</td>
+                <td>{{ data_set.adspend }}</td>
+                <td>{{ data_set.impression }}</td>
+                <td>{{ data_set.cpm }}</td>
+                <td>{{ data_set.clicks }}</td>
+                <td>{{ data_set.cpr }}</td>
+                <td>{{ data_set.leads }}</td>
+                <td>{{ data_set.lp_cvr }}</td>
+                <td>{{ data_set.cpl }}</td>
+                <td>{{ data_set.wa }}</td>
+                <td>{{ data_set.war }}</td>
+                <td>{{ data_set.cpwar }}</td>
+                <td>{{ data_set.sales }}</td>
+                <td>{{ data_set.cpa }}</td>
+
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3" class="text-center text-danger">No {{db}} found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>

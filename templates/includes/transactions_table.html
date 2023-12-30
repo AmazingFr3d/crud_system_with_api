@@ -1,0 +1,43 @@
+<table class="table table-hover mt-3">
+
+        <thead>
+        <tr class="text-center table-primary text-capitalize">
+            <th colspan=10 scope="col"><h4>{{db}} [{{data_set|length}}]</h4></th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">Date</th>
+            <th scope="col">Type</th>
+            <th scope="col">Lead ID</th>
+            <th scope="col">Email</th>
+            <th scope="col">Offer</th>
+            <th scope="col">Amount Paid</th>
+            <th scope="col">Balance Due</th>
+            <th scope="col">Billing Location</th>
+            <th scope="col">Discount</th>
+            <th scope="col">Discount Code</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% if data_set|length > 0 %}
+            {% for data in data_set: %}
+            <tr>
+                <td>{{ data_set.transaction_date }}</td>
+                <td>{{ data_set.transaction_type }}</td>
+                <td>{{ data_set.lead_id }}</td>
+                <td>{{ data_set.email }}</td>
+                <td>{{ data_set.offer_purchased }}</td>
+                <td>{{ data_set.amount_paid }}</td>
+                <td>{{ data_set.balance_due }}</td>
+                <td>{{ data_set.billing_location }}</td>
+                <td>{{ data_set.discount }}</td>
+                <td>{{ data_set.discount_code }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="10" class="text-center text-danger ext-capitalize">No {{db}} found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
