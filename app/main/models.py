@@ -19,7 +19,8 @@ class WebinarFunnelStarts(db.Model):
     sales = db.Column(db.Integer)
     cpa = db.Column(db.Float)
 
-    def __init__(self, date, adspend, impressions, cpm, clicks, ctr, cpc, leads, lp_cvr, cpl, wa, war, cpwar, sales, cpa):
+    def __init__(self, date, adspend, impressions, cpm, clicks, ctr, cpc, leads, lp_cvr, cpl, wa, war, cpwar, sales,
+                 cpa):
         self.date = date
         self.adspend = adspend
         self.impressions = impressions
@@ -39,32 +40,27 @@ class WebinarFunnelStarts(db.Model):
 
 class Transactions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    transaction_id = db.Column(db.String(120))
     transaction_date = db.Column(db.Date)
     transaction_type = db.Column(db.String(20))
-    lead_id = db.Column(db.Integer)
-    email = db.Column(db.String(120))
-    name = db.Column(db.String(120))
-    offer_purchased = db.Column(db.String(120))
-    amount_paid = db.Column(db.Float)
-    balance_due = db.Column(db.Float)
-    billing_location = db.Column(db.String(120))
-    discount = db.Column(db.Float)
-    discount_code = db.Column(db.String(120))
+    product = db.Column(db.Integer)
+    buyer_email = db.Column(db.String(120))
+    buyer_name = db.Column(db.String(120))
+    buyer_username = db.Column(db.String(120))
+    buyer_country = db.Column(db.String(120))
+    amount = db.Column(db.Float)
 
-    def __init__(self, transaction_date, transaction_type, lead_id, email, name, offer_purchased, amount_paid
-                  , balance_due, billing_location, discount, discount_code):
+    def __init__(self, transaction_id, transaction_date, transaction_type, product, buyer_email, buyer_name,
+                 buyer_username, buyer_country, amount):
+        self.transaction_id = transaction_id
         self.transaction_date = transaction_date
         self.transaction_type = transaction_type
-        self.lead_id = lead_id
-        self.email = email
-        self.name = name
-        self.offer_purchased = offer_purchased
-        self.amount_paid = amount_paid
-        self.balance_due = balance_due
-        self.billing_location = billing_location
-        self.discount = discount
-        self.discount_code = discount_code
-
+        self.product = product
+        self.buyer_email = buyer_email
+        self.buyer_name = buyer_name
+        self.buyer_username = buyer_username
+        self.buyer_country = buyer_country
+        self.amount = amount
 
 
 class Leads(db.Model):

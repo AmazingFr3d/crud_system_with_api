@@ -31,23 +31,14 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto ">
             <li class="nav-item">
+                <a class="nav-link" href="{{url_for('main.tables')}}">Tables</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="#">Dashboards</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{url_for('main.upload')}}">Data Uploads</a>
+                <a class="nav-link" href="#">Data Uploads</a>
             </li>
-            <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Data Tables
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{url_for('main.members')}}">Member</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.transactions')}}">Transactions</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.refunds')}}">Refunds</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.webinar')}}">Webinar</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.leads')}}">New Leads</a></li>
-          </ul>
-        </li>
         </ul>
 
         <a class="text text-white mr-5">Welcome, {{ current_user.name }}</a>
@@ -127,8 +118,6 @@
     <script src="{{url_for('static', filename='js/jquery-3.4.1.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="{{url_for('static', filename='js/script.js')}}"></script>

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}
+Database Tables
+{% endblock %}
+{% block heading %}
+Database Tables
+{% endblock %}
+{% block content %}
+<table class="table table-hover table-bordered mt-3">
+
+        <thead>
+        <tr class="text-center table-primary text-capitalize">
+            <th colspan=5 scope="col"><h3>{{db}} [{{data_set.items|length}}]</h3></th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Program</th>
+            <th scope="col">Access</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if data_set.items|length > 0 %}
+            {% for data in data_set.items: %}
+            <tr>
+                <td>{{ data.first_name }}</td>
+                <td>{{ data.last_name }}</td>
+                <td>{{ data.email }}</td>
+                <td>{{ data.program }}</td>
+                <td>{{ data.access }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan=5 class="text-center text-danger">No {{db}} Found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+<nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if data_set.has_prev %}
+                      <li class="page-item m-2"> <a class="page-link" href="{{ url_for('main.members', page=data_set.prev_num) }}"><<</a></li>
+                    {% else %}
+                      <li class="page-item m-2"><a class="page-link btn disabled" href="#"><<</a></li>
+                    {% endif %}
+
+                    <li class="page-item m-2"><a class="page-link btn active" href="#">{{data_set.page}}</a></li>
+
+                    {% if data_set.has_next %}
+                      <li class="page-item m-2"> <a class="page-link" href="{{ url_for('main.members', page=data_set.next_num) }}">>></a></li>
+                    {% else %}
+                      <li class="page-item m-2"><a class="page-link btn disabled" href="#">>></a></li>
+                    {% endif %}
+
+                </ul>
+              </nav>
+{% endblock %}

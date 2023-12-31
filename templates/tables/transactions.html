@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}
+Database Tables
+{% endblock %}
+{% block heading %}
+Database Tables
+{% endblock %}
+{% block content %}
+<table class="table table-hover table-bordered mt-3">
+
+        <thead>
+        <tr class="text-center table-primary text-capitalize">
+            <th colspan=9 scope="col"><h4>{{db}} [{{data_set.items|length}}]</h4></th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">ID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Type</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Username</th>
+            <th scope="col">Country</th>
+            <th scope="col">Product</th>
+            <th scope="col">Amount</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        {% if data_set.items|length > 0 %}
+            {% for data in data_set.items: %}
+            <tr>
+                <td>{{ data.transaction_id }}</td>
+                <td>{{ data.transaction_date }}</td>
+                <td>{{ data.transaction_type }}</td>
+                <td>{{ data.buyer_name }}</td>
+                <td>{{ data.buyer_email }}</td>
+                <td>{{ data.buyer_username }}</td>
+                <td>{{ data.buyer_country }}</td>
+                <td>{{ data.product }}</td>
+                <td>{{ data.amount }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="9" class="text-center text-danger ext-capitalize">No {{db}} found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+<nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if data_set.has_prev %}
+                      <li class="page-item m-2"> <a class="page-link" href="{{ url_for('main.transactions', page=data_set.prev_num) }}"><<</a></li>
+                    {% else %}
+                      <li class="page-item m-2"><a class="page-link btn disabled" href="#"><<</a></li>
+                    {% endif %}
+
+                    <li class="page-item m-2"><a class="page-link btn active" href="#">{{data_set.page}}</a></li>
+
+                    {% if data_set.has_next %}
+                      <li class="page-item m-2"> <a class="page-link" href="{{ url_for('main.transactions', page=data_set.next_num) }}">>></a></li>
+                    {% else %}
+                      <li class="page-item m-2"><a class="page-link btn disabled" href="#">>></a></li>
+                    {% endif %}
+
+                </ul>
+              </nav>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}
+Upload
+{% endblock %}
+{% block heading %}
+Upload
+{% endblock %}
+{% block content %}
+
+
+
+<main class="form-signin w-100 m-auto">
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag()}}
+<!--    <h3 class="h3 mb-3 fw-normal text-center"></h3>-->
+    <div class="form-floating p-2 form-group">
+
+      {{form.file(class="form-control mb-3", id="formFile")}}
+
+      {{form.database(class="form-control mb-3", placeholder="Password")}}
+
+      <div class="text-center">
+        {{form.submit(class="w-50 btn btn-primary py-2") }}
+      </div>
+    </div>
+  </form>
+</main>
+
+{% endblock %}

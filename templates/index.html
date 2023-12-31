@@ -6,27 +6,7 @@ Database Tables
 Database Tables
 {% endblock %}
 {% block content %}
-<main class="form-signin w-100 m-auto" id="db_form">
-  <form method="POST" class="form-inline">
-    <div class="form-floating m-2">
-            {{form.database(class="form-control m-2")}}
-            {{form.submit(class="form-control m-2 btn btn-info")}}
-    </div>
-        </form>
-</main>
 
-{% if db == "leads" %}
-    {% include 'includes/leads_table.html' %}
-{% elif db == "transactions"%}
-    {% include 'includes/transactions_table.html' %}
-{% elif db == "refunds"%}
-    {% include 'includes/transactions_table.html' %}
-{% elif db == "members" %}
-    {% include 'includes/members_table.html' %}
-{% elif db == "webinar_funnel" %}
-    {% include 'includes/webinar_table.html' %}
-{% else %}
-    {% include 'includes/leads_table.html' %}
-{%endif%}
+    {% include 'tables/members_table.html' %}
 
 {% endblock %}

@@ -8,7 +8,7 @@ Users
 {% endblock %}
 
 {% block content %}
-    <table class="table table-hover mt-3">
+    <table class="table table-hover table-bordered mt-3">
 
         <thead>
         <tr class="text-center table-primary">
@@ -17,6 +17,7 @@ Users
         <tr class="table-primary">
             <th scope="col">Name</th>
             <th scope="col">Email</th>
+            <th scope="col">Role</th>
             <th scope="col">Status</th>
         </tr>
         </thead>
@@ -26,6 +27,7 @@ Users
             <tr>
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
                 {% if user.active == "True" %}
                     <td><span class="badge badge-success p-2">Active</span></td>
                 {% else %}
@@ -35,7 +37,7 @@ Users
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="3" class="text-center text-danger">No User Found</td>
+                <td colspan="4" class="text-center text-danger">No User Found</td>
             </tr>
         {% endif %}
         </tbody>

@@ -14,12 +14,12 @@ def login():
         attempted_user = User.query.filter_by(email=form.email.data).first()
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(user=attempted_user)
-            flash(f'Success! You are logged in as: {attempted_user.name}', category='success')
+            flash(f'Success! You are logged in as: {attempted_user.buyer_name}', category='success')
             return redirect(url_for('main.home'))
         else:
             flash('Login unsuccessful. Please check email and password', category='danger')
 
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
@@ -34,19 +34,20 @@ def register():
                               role=form.role.data)
         db.session.add(user_to_create)
         db.session.commit()
+        flash(f'User created!', category='success')
+        return redirect(url_for('auth.user'))
 
-        return redirect(url_for('auth.login'))
     if form.errors != {}:
         for err_msg in form.errors.values():
             flash(f'{err_msg}', category='warning')
-    return render_template('register.html', form=form)
+    return render_template('auth/register.html', form=form)
 
 
 @auth_bp.route('/users')
 # @login_required
 def users():
     sys_users = User.query.all()
-    return render_template('users.html', users=sys_users)
+    return render_template('auth/users.html', users=sys_users)
 
 
 @auth_bp.route('/logout')
