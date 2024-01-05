@@ -10,12 +10,15 @@ from .forms import RegisterForm, LoginForm
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('main.members'))
+
     if form.validate_on_submit():
         attempted_user = User.query.filter_by(email=form.email.data).first()
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(user=attempted_user)
-            flash(f'Success! You are logged in as: {attempted_user.buyer_name}', category='success')
-            return redirect(url_for('main.home'))
+            flash(f'Success! You are logged in as: {attempted_user.name}', category='success')
+            return redirect(url_for('main.members'))
         else:
             flash('Login unsuccessful. Please check email and password', category='danger')
 
@@ -29,13 +32,12 @@ def register():
     if form.validate_on_submit():
         user_to_create = User(name=form.name.data,
                               email=form.email.data,
-                              password=form.confirm.data,
-                              active="True",
-                              role=form.role.data)
+                              password=form.confirm.data)
         db.session.add(user_to_create)
         db.session.commit()
+        login_user(user=user_to_create)
         flash(f'User created!', category='success')
-        return redirect(url_for('auth.user'))
+        return redirect(url_for('auth.users'))
 
     if form.errors != {}:
         for err_msg in form.errors.values():
@@ -44,7 +46,7 @@ def register():
 
 
 @auth_bp.route('/users')
-# @login_required
+@login_required
 def users():
     sys_users = User.query.all()
     return render_template('auth/users.html', users=sys_users)

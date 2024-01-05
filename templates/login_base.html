@@ -28,44 +28,6 @@
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mr-auto ">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Dashboards</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('main.upload')}}">Data Uploads</a>
-            </li>
-            <li class="nav-item">
-                 <a class="nav-link" href="{{url_for('auth.users')}}">Users</a>
-            </li>
-            <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Data Tables
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{url_for('main.members')}}">Member</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.transactions')}}">Transactions</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.refunds')}}">Refunds</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.webinar')}}">Webinar</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.leads')}}">New Leads</a></li>
-          </ul>
-        </li>
-        </ul>
-
-        <a class="text text-white mr-5">Welcome, {{ current_user.name }}</a>
-        <a href="{{url_for('auth.register')}}" class="my-2 my-lg-0 btn btn-success">Create User</a>
-        <a href="{{url_for('auth.logout')}}" class="my-2 my-lg-0 btn btn-info ml-5 mr-2">Logout</a>
-
-
-
-
-
-
-
-
-
-    </div>
 </nav>
 
 

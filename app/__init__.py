@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_session import Session
+from flask_restful import Api
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 session = Session()
+restful_api = Api()
 
 
 def create_app():
@@ -20,13 +22,15 @@ def create_app():
     # Configure Flask-Session to use server-side session storage
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['SESSION_FILE_DIR'] = '/tmp/flask_session'
-    session.init_app(app)
 
+    session.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    db.init_app(app)
+    restful_api.init_app(app)
+
     login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
-    db.init_app(app)
 
     from .main import main_bp
     from .auth import auth_bp
@@ -41,3 +45,8 @@ def create_app():
         db.create_all()
 
     return app
+
+
+from .api.resources import MembersResource
+
+restful_api.add_resource(MembersResource, '/api/ktr')

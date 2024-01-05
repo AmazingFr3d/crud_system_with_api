@@ -13,7 +13,6 @@ class RegisterForm(FlaskForm):
 
     name = StringField('name', validators=[DataRequired(), Length(2, 20)])
     email = StringField('email', validators=[DataRequired(), Email()])
-    role = SelectField('role', validators=[DataRequired()], choices=[('user', 'User'), ('admin', 'Admin')])
     password = PasswordField('password', validators=[DataRequired(), Length(6, 20)])
     confirm = PasswordField('confirm', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Create Account')
