@@ -35,6 +35,6 @@ class User(db.Model, UserMixin):
 
     def check_password_correction(self, attempted_password):
         # Combine the provided password with the stored salt, then hash
-        hashed_attempted_password = bcrypt.generate_password_hash(self.salt + attempted_password).decode('utf-8')
+        hashed_attempted_password = bcrypt.generate_password_hash(attempted_password).decode('utf-8')
         # Compare the hashed passwords
         return bcrypt.check_password_hash(self._password, hashed_attempted_password)
