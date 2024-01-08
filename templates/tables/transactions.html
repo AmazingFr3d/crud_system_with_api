@@ -10,7 +10,7 @@ Database Tables
 
         <thead>
         <tr class="text-center table-primary text-capitalize">
-            <th colspan=9 scope="col"><h4>{{db}} [{{data_set.items|length}}]</h4></th>
+            <th colspan=10 scope="col"><h4>{{db}} [{{data_set.items|length}}]</h4></th>
         </tr>
         <tr class="table-primary">
             <th scope="col">ID</th>
@@ -19,6 +19,7 @@ Database Tables
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Username</th>
+            <th scope="col">State</th>
             <th scope="col">Country</th>
             <th scope="col">Product</th>
             <th scope="col">Amount</th>
@@ -36,6 +37,7 @@ Database Tables
                 <td>{{ data.buyer_name }}</td>
                 <td>{{ data.buyer_email }}</td>
                 <td>{{ data.buyer_username }}</td>
+                <td>{{ data.buyer_state }}</td>
                 <td>{{ data.buyer_country }}</td>
                 <td>{{ data.product }}</td>
                 <td>{{ data.amount }}</td>
@@ -43,7 +45,7 @@ Database Tables
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="9" class="text-center text-danger ext-capitalize">No {{db}} found</td>
+                <td colspan="10" class="text-center text-danger ext-capitalize">No {{db}} found</td>
             </tr>
         {% endif %}
         </tbody>

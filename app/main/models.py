@@ -47,6 +47,7 @@ class Transactions(db.Model):
     buyer_email = db.Column(db.String(120))
     buyer_name = db.Column(db.String(120))
     buyer_username = db.Column(db.String(120))
+    buyer_state = db.Column(db.String(120))
     buyer_country = db.Column(db.String(120))
     amount = db.Column(db.Float)
 

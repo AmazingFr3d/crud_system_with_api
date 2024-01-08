@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}
+Database Tables
+{% endblock %}
+{% block heading %}
+Database Tables
+{% endblock %}ppi
+{% block content %}
+
+<div class="container text-center">
+    <p>
+
+        Our dashboard is powered by Google Looker, renowned for its aesthetic appeal and purposeful design centered around data visualization. This system adeptly manages both the data and the corresponding database.
+        Click here to access the dashboard.
+
+    </p>
+    <a class="btn btn-success text-white p-3 mb-4">Click here to access the dashboard.</a>
+</div>
+
+
+  <div class="container text-center">
+      <div class="row">
+          <div class="col">
+            <div class="card border-light mb-3">
+                <div class="card-header">Sales</div>
+              <div class="card-body">
+                    <table class="table table-hover table-bordered">
+
+                    <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Date</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if sales|length > 0 %}
+                        {% for index, row in sales.iterrows(): %}
+                        <tr>
+                            <td>{{ index }}</td>
+                            <td>{{ row["Amount"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-danger">No {{db}} found</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card border-light mb-3">
+              <div class="card-header">Refunds</div>
+              <div class="card-body">
+                  <table class="table table-hover table-bordered">
+
+                    <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Date</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if refunds|length > 0 %}
+                        {% for index, row in refunds.iterrows(): %}
+                        <tr>
+                            <td>{{ index }}</td>
+                            <td>{{ row.Amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-danger">No {{db}} found</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+
+              </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock %}

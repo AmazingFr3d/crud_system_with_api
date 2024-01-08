@@ -3,6 +3,9 @@ from sqlalchemy import or_
 from flask_login import login_required
 import pandas as pd
 from datetime import datetime
+import plotly
+import plotly.express as px
+import json
 
 from . import main_bp
 from .forms import *
@@ -33,6 +36,32 @@ def transactions():
     page = request.args.get('page', 1, type=int)
     data_set = Transactions.query.paginate(page=page, per_page=per_page)
     return render_template('tables/transactions.html', data_set=data_set, db="transactions")
+
+
+@main_bp.route('/dash')
+@main_bp.route('/home')
+@main_bp.route('/')
+@login_required
+def summary():
+    page = request.args.get('page', 1, type=int)
+    sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
+    sales_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount} for trans in sales])
+    sales_df.Date = pd.to_datetime(sales_df.Date)
+    sales_df.set_index('Date', inplace=True)
+    sales_df = sales_df.resample('MS').sum()
+    sales_df = sales_df.sort_index(ascending=False)
+
+    print(sales_df)
+
+    refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                           Transactions.transaction_type == "Chargeback")).all()
+    refund_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount} for trans in refund])
+    refund_df.Date = pd.to_datetime(refund_df.Date)
+    refund_df.set_index('Date', inplace=True)
+    refund_df = refund_df.resample('MS').sum()
+    refund_df = refund_df.sort_index(ascending=False)
+    print(refund_df)
+    return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions")
 
 
 @main_bp.route('/refunds', methods=['GET', 'POST'])
@@ -104,6 +133,7 @@ def upload():
                             "buyer_email": row["Buyer_Email"],
                             "buyer_username": row["Buyer_Username"],
                             "buyer_country": row["Buyer_Country"],
+                            "buyer_state": row["Buyer_State"],
                             "amount": row["Amount (USD)"]
                         })
                     else:
