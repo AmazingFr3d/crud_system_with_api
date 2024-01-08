@@ -3,9 +3,6 @@ from sqlalchemy import or_
 from flask_login import login_required
 import pandas as pd
 from datetime import datetime
-import plotly
-import plotly.express as px
-import json
 
 from . import main_bp
 from .forms import *
