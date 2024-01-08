@@ -45,22 +45,19 @@ def transactions():
 def summary():
     page = request.args.get('page', 1, type=int)
     sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
-    sales_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount} for trans in sales])
+    sales_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
     sales_df.Date = pd.to_datetime(sales_df.Date)
     sales_df.set_index('Date', inplace=True)
-    sales_df = sales_df.resample('MS').sum()
+    sales_df = sales_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
     sales_df = sales_df.sort_index(ascending=False)
-
-    print(sales_df)
 
     refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
                                            Transactions.transaction_type == "Chargeback")).all()
-    refund_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount} for trans in refund])
+    refund_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
     refund_df.Date = pd.to_datetime(refund_df.Date)
     refund_df.set_index('Date', inplace=True)
-    refund_df = refund_df.resample('MS').sum()
+    refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
     refund_df = refund_df.sort_index(ascending=False)
-    print(refund_df)
     return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions")
 
 

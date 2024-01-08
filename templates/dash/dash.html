@@ -30,14 +30,16 @@ Database Tables
                     <tr class="table-primary">
                         <th scope="col">Date</th>
                         <th scope="col">Amount</th>
+                        <th scope="col">Count</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% if sales|length > 0 %}
+                    {% if sales|length() > 0 %}
                         {% for index, row in sales.iterrows(): %}
                         <tr>
                             <td>{{ index }}</td>
-                            <td>{{ row["Amount"] }}</td>
+                            <td>{{ row.Amount }}</td>
+                            <td>{{ row.Count|int() }}</td>
                         </tr>
                         {% endfor %}
                     {% else %}
@@ -60,14 +62,16 @@ Database Tables
                     <tr class="table-primary">
                         <th scope="col">Date</th>
                         <th scope="col">Amount</th>
+                        <th scope="col">Count</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% if refunds|length > 0 %}
+                    {% if refunds|length() > 0 %}
                         {% for index, row in refunds.iterrows(): %}
                         <tr>
                             <td>{{ index }}</td>
                             <td>{{ row.Amount }}</td>
+                            <td>{{ row.Count|int() }}</td>
                         </tr>
                         {% endfor %}
                     {% else %}
