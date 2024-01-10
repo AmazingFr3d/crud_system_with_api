@@ -6,11 +6,23 @@ Database Tables
 Database Tables
 {% endblock %}
 {% block content %}
+<main class="form-signin w-100 m-auto">
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag()}}
+    <div class="form-floating p-2 form-group">
+      {{form.type(class="form-control mb-3")}}
+
+      <div class="text-center">
+        {{form.submit(class="w-50 btn btn-primary py-2") }}
+      </div>
+    </div>
+  </form>
+</main>
 <table class="table table-hover table-bordered mt-3">
 
         <thead>
         <tr class="text-center table-primary text-capitalize">
-            <th colspan=10 scope="col"><h4>{{db}} [{{data_set.items|length}}]</h4></th>
+            <th colspan=10 scope="col"><h4>{{db}} [{{count}}]</h4></th>
         </tr>
         <tr class="table-primary">
             <th scope="col">ID</th>

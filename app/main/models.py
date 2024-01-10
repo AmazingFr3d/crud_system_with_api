@@ -6,36 +6,18 @@ class WebinarFunnelStarts(db.Model):
     date = db.Column(db.Date)
     adspend = db.Column(db.Float)
     impressions = db.Column(db.Integer)
-    cpm = db.Column(db.Float)
     clicks = db.Column(db.Integer)
-    ctr = db.Column(db.Float)
-    cpc = db.Column(db.Float)
     leads = db.Column(db.Integer)
-    lp_cvr = db.Column(db.Float)
-    cpl = db.Column(db.Float)
-    wa = db.Column(db.Float)
-    war = db.Column(db.Float)
-    cpwar = db.Column(db.Float)
     sales = db.Column(db.Integer)
-    cpa = db.Column(db.Float)
 
     def __init__(self, date, adspend, impressions, cpm, clicks, ctr, cpc, leads, lp_cvr, cpl, wa, war, cpwar, sales,
                  cpa):
         self.date = date
         self.adspend = adspend
         self.impressions = impressions
-        self.cpm = cpm
         self.clicks = clicks
-        self.ctr = ctr
-        self.cpc = cpc
         self.leads = leads
-        self.lp_cvr = lp_cvr
-        self.cpl = cpl
-        self.wa = wa
-        self.war = war
-        self.cpwar = cpwar
         self.sales = sales
-        self.cpa = cpa
 
 
 class Transactions(db.Model):
@@ -92,3 +74,22 @@ class Members(db.Model):
         self.email = email
         self.program = program
         self.access = access
+
+class YoutubeStats(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    week_end = db.Column(db.Date)
+    impressions = db.Column(db.Integer)
+    clicks = db.Column(db.Integer)
+    cost = db.Column(db.Float)
+    leads = db.Column(db.Integer)
+    calls = db.Column(db.Integer)
+    sales = db.Column(db.Integer)
+
+    def __init__(self, week_end, impressions, clicks, cost, leads, calls, sales):
+        self.week_end = week_end
+        self.impressions = impressions
+        self.clicks = clicks
+        self.cost = cost
+        self.leads = leads
+        self.calls = calls
+        self.sales = sales

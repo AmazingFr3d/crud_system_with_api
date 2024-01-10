@@ -15,6 +15,22 @@ class DbSelect(FlaskForm):
 
 class UploadForm(FlaskForm):
     file = FileField('CSV File', validators=[FileRequired(), FileAllowed(['csv'], 'CSV Files only')])
-    database = SelectField('role', validators=[DataRequired()], choices=[
-        ('leads', 'Leads'), ('transactions', 'Transactions'), ('members', 'Members'), ('refunds', 'Refunds')])
+    database = SelectField('Table', validators=[DataRequired()], choices=[
+        ('leads', 'Leads'),
+        ('transactions', 'Transactions'),
+        ('members', 'Members'),
+        ('webinar', 'Webinar'),
+        ('youtube', 'Youtube')])
     submit = SubmitField('Upload')
+
+
+class DashForm(FlaskForm):
+    freq = SelectField('Time Frame', validators=[DataRequired()], choices=[
+        ('monthly', 'Monthly'), ('weekly', 'Weekly')])
+    submit = SubmitField('Switch')
+
+
+class TransactionForm(FlaskForm):
+    type = SelectField('Type', validators=[DataRequired()], choices=[
+        ('sales', 'Sales'), ('refunds', 'Refunds'), ('all','All')])
+    submit = SubmitField('Switch')

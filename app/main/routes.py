@@ -30,44 +30,103 @@ def leads():
 @main_bp.route('/transactions', methods=['GET', 'POST'])
 @login_required
 def transactions():
-    page = request.args.get('page', 1, type=int)
-    data_set = Transactions.query.paginate(page=page, per_page=per_page)
-    return render_template('tables/transactions.html', data_set=data_set, db="transactions")
+    form = TransactionForm()
+    if form.is_submitted():
+        if form.type.data == 'all':
+            page = request.args.get('page', 1, type=int)
+            data_set = Transactions.query.paginate(page=page, per_page=per_page)
+            count = Transactions.query.count()
+            return render_template('tables/transactions.html', data_set=data_set, db="All", form=form, count=count)
+
+        elif form.type.data == 'sales':
+            page = request.args.get('page', 1, type=int)
+
+            data_set = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).paginate(page=page,
+                                                                                                        per_page=per_page)
+            count = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).count()
+            return render_template('tables/transactions.html', data_set=data_set, db="Sale", form=form, count=count)
+
+        elif form.type.data == 'refunds':
+            page = request.args.get('page', 1, type=int)
+
+            data_set = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                                     Transactions.transaction_type == "Chargeback")).paginate(page=page,
+                                                                                                              per_page=per_page)
+            count = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                                  Transactions.transaction_type == "Chargeback")).count()
+            return render_template('tables/transactions.html', data_set=data_set, db="Refund", form=form, count=count)
+    else:
+        page = request.args.get('page', 1, type=int)
+        data_set = Transactions.query.paginate(page=page, per_page=per_page)
+        count = Transactions.query.count()
+        return render_template('tables/transactions.html', data_set=data_set, db="All", form=form, count=count)
 
 
-@main_bp.route('/dash')
-@main_bp.route('/home')
-@main_bp.route('/')
+@main_bp.route('/dash', methods=['GET', 'POST'])
+@main_bp.route('/home', methods=['GET', 'POST'])
+@main_bp.route('/', methods=['GET', 'POST'])
 @login_required
 def summary():
-    page = request.args.get('page', 1, type=int)
-    sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
-    sales_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
-    sales_df.Date = pd.to_datetime(sales_df.Date)
-    sales_df.set_index('Date', inplace=True)
-    sales_df = sales_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
-    sales_df = sales_df.sort_index(ascending=False)
+    form = DashForm()
+    if form.is_submitted():
+        freq = form.freq.data
+        if freq == "monthly":
+            sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
+            sales_df = pd.DataFrame(
+                [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
+            sales_df.Date = pd.to_datetime(sales_df.Date)
+            sales_df.set_index('Date', inplace=True)
+            sales_df = sales_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
+            sales_df = sales_df.sort_index(ascending=False)
 
-    refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
-                                           Transactions.transaction_type == "Chargeback")).all()
-    refund_df = pd.DataFrame([{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
-    refund_df.Date = pd.to_datetime(refund_df.Date)
-    refund_df.set_index('Date', inplace=True)
-    refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
-    refund_df = refund_df.sort_index(ascending=False)
-    return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions")
+            refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                                   Transactions.transaction_type == "Chargeback")).all()
+            refund_df = pd.DataFrame(
+                [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
+            refund_df.Date = pd.to_datetime(refund_df.Date)
+            refund_df.set_index('Date', inplace=True)
+            refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
+            refund_df = refund_df.sort_index(ascending=False)
 
+            return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+        elif freq == "weekly":
+            sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
+            sales_df = pd.DataFrame(
+                [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
+            sales_df.Date = pd.to_datetime(sales_df.Date)
+            sales_df.set_index('Date', inplace=True)
+            sales_df = sales_df.resample('W').agg({"Amount": "sum", "Count": "count"})
+            sales_df = sales_df.sort_index(ascending=False)
 
-@main_bp.route('/refunds', methods=['GET', 'POST'])
-@login_required
-def refunds():
-    page = request.args.get('page', 1, type=int)
+            refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                                   Transactions.transaction_type == "Chargeback")).all()
+            refund_df = pd.DataFrame(
+                [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
+            refund_df.Date = pd.to_datetime(refund_df.Date)
+            refund_df.set_index('Date', inplace=True)
+            refund_df = refund_df.resample('W').agg({"Amount": "sum", "Count": "count"})
+            refund_df = refund_df.sort_index(ascending=False)
 
-    data_set = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
-                                             Transactions.transaction_type == "Chargeback")).paginate(page=page,
-                                                                                                      per_page=per_page)
+            return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+    else:
+        sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
+        sales_df = pd.DataFrame(
+            [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
+        sales_df.Date = pd.to_datetime(sales_df.Date)
+        sales_df.set_index('Date', inplace=True)
+        sales_df = sales_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
+        sales_df = sales_df.sort_index(ascending=False)
 
-    return render_template('tables/transactions.html', data_set=data_set, db="refunds")
+        refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                               Transactions.transaction_type == "Chargeback")).all()
+        refund_df = pd.DataFrame(
+            [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
+        refund_df.Date = pd.to_datetime(refund_df.Date)
+        refund_df.set_index('Date', inplace=True)
+        refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
+        refund_df = refund_df.sort_index(ascending=False)
+
+        return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
 
 
 @main_bp.route('/webinar', methods=['GET', 'POST'])
@@ -144,6 +203,61 @@ def upload():
                             amount=row["Amount (USD)"]
                         )
                         db.session.add(transaction)
+
+            if data == "webinar":
+                for index, row in df.iterrows():
+                    # Try to load an existing transaction with the same transaction_id
+                    existing_webinar = WebinarFunnelStarts.query.filter_by(date=row['Date']).first()
+
+                    if existing_webinar:
+                        # Update existing transaction
+                        WebinarFunnelStarts.query.filter_by(id=existing_webinar.id).update({
+                            "date": datetime.strptime(row['Date'], '%d/%m/%Y'),
+                            "adspend": row["Adspend (USD)"],
+                            "impressions": row["Impr"],
+                            "clicks": row["Clicks"],
+                            "leads": row["Leads"],
+                            "sales": row["Sales"],
+                        })
+                    else:
+                        # Insert new transaction
+                        webinar_data = WebinarFunnelStarts(
+                            date=datetime.strptime(row["Date"], '%d/%m/%Y'),
+                            adspend=row["Adspend (USD)"],
+                            impressions=row["Impr"],
+                            clicks=row["Clicks"],
+                            leads=row["Leads"],
+                            sales=row["Sales"])
+                        db.session.add(webinar_data)
+
+            if data == "youtube":
+                for index, row in df.iterrows():
+                    # Try to load an existing transaction with the same transaction_id
+                    existing_week = YoutubeStats.query.filter_by(week_end=row['Week Ending']).first()
+
+                    if existing_week:
+                        # Update existing transaction
+                        YoutubeStats.query.filter_by(id=existing_week.id).update({
+                            "week_end": datetime.strptime(row['Date'], '%d/%m/%y'),
+                            "impressions": row["impressions"],
+                            "clicks": row["Clicks"],
+                            "cost": row["Cost"],
+                            "leads": row["Leads"],
+                            "calls": row["Calls"],
+                            "sales": row["Sales"],
+                        })
+                    else:
+                        # Insert new transaction
+                        youtube = YoutubeStats(
+                            week_end=datetime.strptime(row['Date'], '%d/%m/%y'),
+                            impressions=row["Impr"],
+                            clicks=row["Clicks"],
+                            cost=row["Cost"],
+                            leads=row["Leads"],
+                            calls=row["Calls"],
+                            sales=row["Sales"]
+                        )
+                        db.session.add(youtube)
 
             db.session.commit()
             db.session.flush()
