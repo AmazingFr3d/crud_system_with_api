@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}
-Database Tables
+{{db}} Report
 {% endblock %}
 {% block heading %}
-Database Tables
+{{db}} Report
 {% endblock %}
 {% block content %}
 <table class="table table-hover table-bordered mt-3">
@@ -13,8 +13,7 @@ Database Tables
             <th colspan=14 scope="col"><h4>{{db}} [{{count}}]</h4></th>
         </tr>
         <tr class="table-primary">
-            <th scope="col">Date</th>
-            <th scope="col">Adspend</th>
+            <th scope="col">Week Ending</th>
             <th scope="col">Impressions</th>
             <th scope="col">CPM</th>
             <th scope="col">Clicks</th>
@@ -33,8 +32,7 @@ Database Tables
         {% if data_set.items|length > 0 %}
             {% for data in data_set.items: %}
             <tr>
-                <td>{{ data.date }}</td>
-                <td>{{ data.adspend }}</td>
+                <td>{{ data.week_end }}</td>
                 <td>{{ data.impressions }}</td>
                 <td>{{ data.cpm }}</td>
                 <td>{{ data.clicks }}</td>

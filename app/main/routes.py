@@ -1,8 +1,11 @@
 from flask import render_template, flash, redirect, url_for, request
-from sqlalchemy import or_
+from sqlalchemy import or_, desc
 from flask_login import login_required
 import pandas as pd
 from datetime import datetime
+
+
+import traceback
 
 from . import main_bp
 from .forms import *
@@ -36,7 +39,7 @@ def transactions():
             page = request.args.get('page', 1, type=int)
             data_set = Transactions.query.paginate(page=page, per_page=per_page)
             count = Transactions.query.count()
-            return render_template('tables/transactions.html', data_set=data_set, db="All", form=form, count=count)
+            return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form, count=count)
 
         elif form.type.data == 'sales':
             page = request.args.get('page', 1, type=int)
@@ -44,7 +47,7 @@ def transactions():
             data_set = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).paginate(page=page,
                                                                                                         per_page=per_page)
             count = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).count()
-            return render_template('tables/transactions.html', data_set=data_set, db="Sale", form=form, count=count)
+            return render_template('tables/transactions.html', data_set=data_set, db="Sales", form=form, count=count)
 
         elif form.type.data == 'refunds':
             page = request.args.get('page', 1, type=int)
@@ -54,12 +57,12 @@ def transactions():
                                                                                                               per_page=per_page)
             count = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
                                                   Transactions.transaction_type == "Chargeback")).count()
-            return render_template('tables/transactions.html', data_set=data_set, db="Refund", form=form, count=count)
+            return render_template('tables/transactions.html', data_set=data_set, db="Refunds", form=form, count=count)
     else:
         page = request.args.get('page', 1, type=int)
         data_set = Transactions.query.paginate(page=page, per_page=per_page)
         count = Transactions.query.count()
-        return render_template('tables/transactions.html', data_set=data_set, db="All", form=form, count=count)
+        return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form, count=count)
 
 
 @main_bp.route('/dash', methods=['GET', 'POST'])
@@ -133,8 +136,17 @@ def summary():
 @login_required
 def webinar():
     page = request.args.get('page', 1, type=int)
-    data_set = Members.query.paginate(page=page, per_page=per_page)
-    return render_template('tables/webinar.html', data_set=data_set, db="webinar")
+    data_set = WebinarFunnelStarts.query.order_by(desc(WebinarFunnelStarts.date)).paginate(page=page, per_page=per_page)
+    count = WebinarFunnelStarts.query.count()
+    return render_template('tables/webinar.html', data_set=data_set, db="webinar",count=count)
+
+@main_bp.route('/youtube', methods=['GET', 'POST'])
+@login_required
+def youtube():
+    page = request.args.get('page', 1, type=int)
+    data_set = YoutubeStats.query.order_by(desc(YoutubeStats.week_end)).paginate(page=page, per_page=per_page)
+    count = YoutubeStats.query.count()
+    return render_template('tables/youtube.html', data_set=data_set, db="Youtube",count=count)
 
 
 @main_bp.route('/upload', methods=['GET', 'POST'])
@@ -238,24 +250,26 @@ def upload():
                     if existing_week:
                         # Update existing transaction
                         YoutubeStats.query.filter_by(id=existing_week.id).update({
-                            "week_end": datetime.strptime(row['Date'], '%d/%m/%y'),
+                            "week_end": datetime.strptime(row['Week Ending'], '%d/%m/%y'),
                             "impressions": row["impressions"],
                             "clicks": row["Clicks"],
                             "cost": row["Cost"],
                             "leads": row["Leads"],
                             "calls": row["Calls"],
                             "sales": row["Sales"],
+                            "revenue": row["Revenue"],
                         })
                     else:
                         # Insert new transaction
                         youtube = YoutubeStats(
-                            week_end=datetime.strptime(row['Date'], '%d/%m/%y'),
-                            impressions=row["Impr"],
+                            week_end=datetime.strptime(row['Week Ending'], '%d/%m/%y'),
+                            impressions=row["Impressions"],
                             clicks=row["Clicks"],
                             cost=row["Cost"],
                             leads=row["Leads"],
                             calls=row["Calls"],
-                            sales=row["Sales"]
+                            sales=row["Sales"],
+                            revenue=row["Revenue"],
                         )
                         db.session.add(youtube)
 
@@ -265,7 +279,7 @@ def upload():
 
         except Exception as e:
             db.session.rollback()
-            flash(f'Error inserting/updating data: {str(e)}', 'danger')
+            flash(f'Error inserting/updating data:{str(e)}', 'danger')
 
         return redirect(url_for('main.upload'))
 
