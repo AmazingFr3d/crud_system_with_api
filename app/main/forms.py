@@ -24,13 +24,19 @@ class UploadForm(FlaskForm):
     submit = SubmitField('Upload')
 
 
-class DashForm(FlaskForm):
+class SumForm(FlaskForm):
     freq = SelectField('Time Frame', validators=[DataRequired()], choices=[
         ('monthly', 'Monthly'), ('weekly', 'Weekly')])
     submit = SubmitField('Switch')
 
 
+class DashForm(FlaskForm):
+    dash = SelectField('dash', validators=[DataRequired()], choices=[
+        ('sales', 'Sales'), ('webinar', 'Webinar'), ('youtube', 'Youtube')])
+    submit = SubmitField('Switch')
+
+
 class TransactionForm(FlaskForm):
     type = SelectField('Type', validators=[DataRequired()], choices=[
-        ('sales', 'Sales'), ('refunds', 'Refunds'), ('all','All')])
+        ('sales', 'Sales'), ('refunds', 'Refunds'), ('all', 'All')])
     submit = SubmitField('Switch')

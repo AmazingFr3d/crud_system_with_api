@@ -65,12 +65,11 @@ def transactions():
         return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form, count=count)
 
 
-@main_bp.route('/dash', methods=['GET', 'POST'])
-@main_bp.route('/home', methods=['GET', 'POST'])
-@main_bp.route('/', methods=['GET', 'POST'])
+
+@main_bp.route('/summary', methods=['GET', 'POST'])
 @login_required
 def summary():
-    form = DashForm()
+    form = SumForm()
     if form.is_submitted():
         freq = form.freq.data
         if freq == "monthly":
@@ -129,7 +128,62 @@ def summary():
         refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
         refund_df = refund_df.sort_index(ascending=False)
 
-        return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+        return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+
+
+@main_bp.route('/dash', methods=['GET', 'POST'])
+@main_bp.route('/home', methods=['GET', 'POST'])
+@main_bp.route('/', methods=['GET', 'POST'])
+def dash():
+    form = DashForm()
+    data = "sales"
+    iframe = f"""
+                    <iframe width="100%" height="850" 
+                        src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
+                        frameborder="0" 
+                        style="border:0" 
+                        allowfullscreen 
+                        andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                    </iframe>
+                """
+    if form.validate_on_submit():
+        data = form.dash.data
+
+        if data == 'sales':
+            iframe = """
+                <iframe width="100%" height="850" 
+                    src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
+                    frameborder="0" 
+                    style="border:0" 
+                    allowfullscreen 
+                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                </iframe>
+            """
+        elif data == 'webinar':
+            iframe = """
+                <iframe width="100%" height="850" 
+                    src="https://lookerstudio.google.com/embed/reporting/e3fa30fe-2009-4857-a7eb-ad2262c893eb/page/XM0mD"
+                    frameborder="0" 
+                    style="border:0" 
+                    allowfullscreen 
+                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                </iframe>
+            """
+        elif data == 'youtube':
+            iframe = """
+                <iframe width="100%" height="850" 
+                    src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
+                    frameborder="0" 
+                    style="border:0" 
+                    allowfullscreen 
+                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                </iframe>
+            """
+        return render_template('dash/dash.html', form=form, iframe=iframe, data=data)
+
+    else:
+        return render_template('dash/dash.html', form=form, iframe=iframe, data=data)
+
 
 
 @main_bp.route('/webinar', methods=['GET', 'POST'])

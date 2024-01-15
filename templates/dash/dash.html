@@ -3,23 +3,16 @@
 Dashboard
 {% endblock %}
 {% block heading %}
-{% endblock %}ppi
+<p class="text-capitalize">{{data}} Dashboard</p>
+{% endblock %}
 {% block content %}
 
-<div class="container text-center">
-    <p>
-
-        Our dashboard is powered by Google Looker, renowned for its aesthetic appeal and purposeful design centered around data visualization. This system adeptly manages both the data and the corresponding database.
-
-    </p>
-    <a class="btn btn-success text-white p-3 mb-2">Click here to access the dashboard.</a>
-</div>
 
 <main class="form-signin w-100 m-auto">
   <form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag()}}
     <div class="form-floating p-2 form-group">
-      {{form.freq(class="form-control mb-3")}}
+      {{form.dash(class="form-control mb-3")}}
 
       <div class="text-center">
         {{form.submit(class="w-50 btn btn-primary py-2") }}
@@ -28,73 +21,9 @@ Dashboard
   </form>
 </main>
 
-  <div class="container text-center">
-      <div class="row">
-          <div class="col">
-            <div class="card border-light mb-3">
-                <div class="card-header">Sales</div>
-              <div class="card-body">
-                    <table class="table table-hover table-bordered">
+<div class="container text-center mb-5">
+    {{ iframe|safe}}
+</div>
 
-                    <thead>
-                    <tr class="table-primary">
-                        <th scope="col">Date</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Count</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if sales|length() > 0 %}
-                        {% for index, row in sales.iterrows(): %}
-                        <tr>
-                            <td>{{ index }}</td>
-                            <td>{{ row.Amount }}</td>
-                            <td>{{ row.Count|int() }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="3" class="text-center text-danger">No {{db}} found</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card border-light mb-3">
-              <div class="card-header">Refunds</div>
-              <div class="card-body">
-                  <table class="table table-hover table-bordered">
-
-                    <thead>
-                    <tr class="table-primary">
-                        <th scope="col">Date</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Count</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if refunds|length() > 0 %}
-                        {% for index, row in refunds.iterrows(): %}
-                        <tr>
-                            <td>{{ index }}</td>
-                            <td>{{ row.Amount }}</td>
-                            <td>{{ row.Count|int() }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="3" class="text-center text-danger">No {{db}} found</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-
-              </div>
-          </div>
-      </div>
-  </div>
 
 {% endblock %}

@@ -28,24 +28,24 @@ def login():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 # @login_required
 def register():
-    if current_user.role == 'admin':
-        form = RegisterForm()
-        if form.validate_on_submit():
-            user_to_create = User(name=form.name.data,
-                                  email=form.email.data,
-                                  password=form.confirm.data,
-                                  role=form.role.data )
-            db.session.add(user_to_create)
-            db.session.commit()
-            flash(f'User created!', category='success')
-            return redirect(url_for('auth.login'))
+    # if current_user.role == 'admin':
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user_to_create = User(name=form.name.data,
+                              email=form.email.data,
+                              password=form.confirm.data,
+                              role=form.role.data )
+        db.session.add(user_to_create)
+        db.session.commit()
+        flash(f'User created!', category='success')
+        return redirect(url_for('auth.login'))
 
-        if form.errors != {}:
-            for err_msg in form.errors.values():
-                flash(f'{err_msg}', category='warning')
-        return render_template('auth/register.html', form=form)
-    else:
-        return redirect(url_for('main.summary'))
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'{err_msg}', category='warning')
+    return render_template('auth/register.html', form=form)
+    # else:
+    #     return redirect(url_for('main.summary'))
 
 
 @auth_bp.route('/users')
