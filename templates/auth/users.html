@@ -28,11 +28,13 @@ Users
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.role }}</td>
-                {% if user.active == "True" %}
-                    <td><span class="badge badge-success p-2">Active</span></td>
-                {% else %}
-                    <td><span class="badge badge-danger">Inactive</span></td>
-                {% endif %}
+                <td>
+                    <form action="{{ url_for('auth.delete_user', user_id=user.id) }}" method="post">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+
+                </td>
             </tr>
             {% endfor %}
         {% else %}

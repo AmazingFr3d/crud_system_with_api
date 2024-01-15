@@ -76,7 +76,7 @@
                         $0.0
                     {% endif %}
                 </td>
-                <td>{{ data.sales }}</td>
+                <td>${{ "{:0,.2f}".format(data.sales) }}</td>
                 <td>
                     {% if data.sales > 0 %}
                         ${{ "{:0,.2f}".format(data.cost / data.sales) }}
@@ -84,7 +84,7 @@
                         $0.0
                     {% endif %}
                 </td>
-                <td>{{ "{:0,.2f}".format(data.revenue) }}</td>
+                <td>${{ "{:0,.2f}".format(data.revenue) }}</td>
                 <td>
                     {% if data.cost > 0 %}
                         ${{ "{:0,.2f}".format(data.revenue / data.cost) }}

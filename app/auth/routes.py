@@ -28,27 +28,34 @@ def login():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 # @login_required
 def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        user_to_create = User(name=form.name.data,
-                              email=form.email.data,
-                              password=form.confirm.data)
-        db.session.add(user_to_create)
-        db.session.commit()
-        flash(f'User created!', category='success')
-        return redirect(url_for('auth.login'))
+    if current_user.role == 'admin':
+        form = RegisterForm()
+        if form.validate_on_submit():
+            user_to_create = User(name=form.name.data,
+                                  email=form.email.data,
+                                  password=form.confirm.data,
+                                  role=form.role.data )
+            db.session.add(user_to_create)
+            db.session.commit()
+            flash(f'User created!', category='success')
+            return redirect(url_for('auth.login'))
 
-    if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(f'{err_msg}', category='warning')
-    return render_template('auth/register.html', form=form)
+        if form.errors != {}:
+            for err_msg in form.errors.values():
+                flash(f'{err_msg}', category='warning')
+        return render_template('auth/register.html', form=form)
+    else:
+        return redirect(url_for('main.summary'))
 
 
 @auth_bp.route('/users')
 @login_required
 def users():
-    sys_users = User.query.all()
-    return render_template('auth/users.html', users=sys_users)
+    if current_user.role == 'admin':
+        sys_users = User.query.all()
+        return render_template('auth/users.html', users=sys_users)
+    else:
+        return redirect(url_for('main.summary'))
 
 
 @auth_bp.route('/logout')
@@ -58,11 +65,18 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-@auth_bp.route('/delete_user/<user_id>', methods=["POST"])
+@auth_bp.route('/delete_user/<int:user_id>', methods=["POST"])
 @login_required
 def delete_user(user_id):
-    user_to_delete = User.query.get(user_id)
-    db.session.delete(user_to_delete)
-    db.session.commit()
-    flash("User deleted", category='info')
-    return redirect(url_for('auth.users'))
+    if current_user.role == 'admin':
+        if current_user.id != user_id:
+            user_to_delete = User.query.get(user_id)
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            flash("User deleted", category='info')
+            return redirect(url_for('auth.users'))
+        else:
+            flash("You cannot delete yourself!", category='warning')
+            return redirect(url_for('auth.users'))
+    else:
+        return redirect(url_for('main.summary'))
