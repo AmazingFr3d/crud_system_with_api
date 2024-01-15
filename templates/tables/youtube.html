@@ -10,22 +10,25 @@
 
         <thead>
         <tr class="text-center table-primary text-capitalize">
-            <th colspan=14 scope="col"><h4>{{db}} [{{count}}]</h4></th>
+            <th colspan=16 scope="col"><h4>{{db}} [{{count}}]</h4></th>
         </tr>
         <tr class="table-primary">
             <th scope="col">Week Ending</th>
             <th scope="col">Impressions</th>
-            <th scope="col">CPM</th>
             <th scope="col">Clicks</th>
-            <th scope="col">CPR</th>
+            <th scope="col">CPC</th>
+            <th scope="col">CTR</th>
+            <th scope="col">CPM</th>
+            <th scope="col">Cost</th>
             <th scope="col">Leads</th>
-            <th scope="col">LP_CVR</th>
-            <th scope="col">CPl</th>
-            <th scope="col">WA</th>
-            <th scope="col">WAR</th>
-            <th scope="col">CPWAR</th>
+            <th scope="col">Cost Per Lead</th>
+            <th scope="col">Calls</th>
+            <th scope="col">Cost Per Call</th>
             <th scope="col">Sales</th>
-            <th scope="col">CPA</th>
+            <th scope="col">Cost Per Sale</th>
+            <th scope="col">Revenue</th>
+            <th scope="col">ROAS</th>
+            <th scope="col">Profit</th>
         </tr>
         </thead>
         <tbody>
@@ -33,18 +36,63 @@
             {% for data in data_set.items: %}
             <tr>
                 <td>{{ data.week_end }}</td>
-                <td>{{ data.impressions }}</td>
-                <td>{{ data.cpm }}</td>
-                <td>{{ data.clicks }}</td>
-                <td>{{ data.cpr }}</td>
-                <td>{{ data.leads }}</td>
-                <td>{{ data.lp_cvr }}</td>
-                <td>{{ data.cpl }}</td>
-                <td>{{ data.wa }}</td>
-                <td>{{ data.war }}</td>
-                <td>{{ data.cpwar }}</td>
+                <td>{{ "{:0,.2f}".format(data.impressions) }}</td>
+                <td>{{ "{:0,.2f}".format(data.clicks) }}</td>
+                <td>
+                    {% if data.clicks > 0 %}
+                        ${{"{:0,.2f}".format(data.cost / data.clicks)}}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>
+                    {% if data.impressions > 0 %}
+                        {{'%0.2f'|format(data.clicks / data.impressions * 100)}}%
+                    {% else %}
+                        0.0%
+                    {% endif %}
+                </td>
+                <td>
+                    {% if data.impressions > 0 %}
+                        ${{'%0.2f'|format(data.cost / data.impressions * 1000)}}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>${{ "{:0,.2f}".format(data.cost) }}</td>
+                <td>{{ "{:0,.2f}".format(data.leads )}}</td>
+                <td>
+                    {% if data.leads > 0 %}
+                        ${{ "{:0,.2f}".format(data.cost / data.leads) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>{{ data.calls|int }}</td>
+                <td>
+                    {% if data.calls > 0 %}
+                        ${{ "{:0,.2f}".format(data.cost / data.calls) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
                 <td>{{ data.sales }}</td>
-                <td>{{ data.cpa }}</td>
+                <td>
+                    {% if data.sales > 0 %}
+                        ${{ "{:0,.2f}".format(data.cost / data.sales) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>{{ "{:0,.2f}".format(data.revenue) }}</td>
+                <td>
+                    {% if data.cost > 0 %}
+                        ${{ "{:0,.2f}".format(data.revenue / data.cost) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>${{ "{:0,.2f}".format(data.revenue - data.cost) }}</td>
 
             </tr>
             {% endfor %}

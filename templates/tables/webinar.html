@@ -21,10 +21,7 @@ Database Tables
             <th scope="col">CPR</th>
             <th scope="col">Leads</th>
             <th scope="col">LP_CVR</th>
-            <th scope="col">CPl</th>
-            <th scope="col">WA</th>
-            <th scope="col">WAR</th>
-            <th scope="col">CPWAR</th>
+            <th scope="col">CPL</th>
             <th scope="col">Sales</th>
             <th scope="col">CPA</th>
         </tr>
@@ -34,19 +31,39 @@ Database Tables
             {% for data in data_set.items: %}
             <tr>
                 <td>{{ data.date }}</td>
-                <td>{{ data.adspend }}</td>
-                <td>{{ data.impressions }}</td>
-                <td>{{ data.cpm }}</td>
-                <td>{{ data.clicks }}</td>
-                <td>{{ data.cpr }}</td>
+                <td>{{ "{:0,.2f}".format(data.adspend) }}</td>
+                <td>{{ "{:0,.2f}".format(data.impressions) }}</td>
+                <td>{% if data.impressions > 0 %}
+                        ${{'%0.2f'|format(data.adspend / data.impressions * 1000)}}
+                    {% else %}
+                       $0.0
+                    {% endif %}
+                </td>
+                <td>{{ "{:0,}".format(data.clicks) }}</td>
+                <td>{% if data.clicks > 0 %}
+                        ${{"{:0,.2f}".format(data.adspend / data.clicks)}}
+                    {% else %}
+                       $0.0
+                    {% endif %}
+                </td>
                 <td>{{ data.leads }}</td>
-                <td>{{ data.lp_cvr }}</td>
-                <td>{{ data.cpl }}</td>
-                <td>{{ data.wa }}</td>
-                <td>{{ data.war }}</td>
-                <td>{{ data.cpwar }}</td>
-                <td>{{ data.sales }}</td>
-                <td>{{ data.cpa }}</td>
+                <td>{% if data.clicks > 0 %}
+                        {{"{:0,.2f}".format(data.leads / data.clicks * 100)}}%
+                    {% else %}
+                        0.0%
+                    {% endif %}</td>
+                <td>{% if data.leads > 0 %}
+                        ${{"{:0,.2f}".format(data.adspend / data.leads)}}
+                    {% else %}
+                        $0.0
+                    {% endif %}</td>
+                <td>${{ data.sales|float }}</td>
+                <td>{% if data.sales > 0 %}
+                        ${{"{:0,.2f}".format(data.adspend / data.sales)}}
+                    {% else %}
+                       $0.0
+                    {% endif %}
+                </td>
 
             </tr>
             {% endfor %}
