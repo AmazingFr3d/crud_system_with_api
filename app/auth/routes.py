@@ -18,7 +18,7 @@ def login():
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(user=attempted_user)
             flash(f'Success! You are logged in as: {attempted_user.name}', category='success')
-            return redirect(url_for('main.summary'))
+            return redirect(url_for('main.dash'))
         else:
             flash('Login unsuccessful. Please check email and password', category='danger')
 
