@@ -1,22 +1,22 @@
 {% extends 'login_base.html' %}
 {% block title %}
-Login
+Password Reset
 {% endblock %}
 {% block heading %}
+Password Reset
 {% endblock %}
 {% block content %}
 
 
 
 <main class="form-signin w-100 m-auto">
-  <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="logo" width="80" height="80" class="mx-auto d-block mb-3">
   <form method="POST">
     {{ form.hidden_tag()}}
 <!--    <h3 class="h3 mb-3 fw-normal text-center"></h3>-->
     <div class="form-floating p-2">
-      {{form.email(class="form-control mb-3", placeholder="Email")}}
-
       {{form.password(class="form-control mb-3", placeholder="Password")}}
+
+      {{form.confirm(class="form-control mb-3", placeholder="Confirm Password")}}
 
       <div class="text-center">
         {{form.submit(class="w-50 btn btn-primary py-2") }}

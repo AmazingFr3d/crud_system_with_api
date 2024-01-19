@@ -4,25 +4,25 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_session import Session
 from flask_restful import Api
+from flask_mail import Mail
+from .config import Config
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 session = Session()
 restful_api = Api()
+mail = Mail()
 
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object(Config)
     app.static_folder = "../static"
     app.template_folder = "../templates"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///dbmgt.sqlite"
-    app.config["SECRET_KEY"] = '9c97f13c5fd005af6d6090af'
 
     # Configure Flask-Session to use server-side session storage
-    app.config['SESSION_TYPE'] = 'filesystem'
-    app.config['SESSION_FILE_DIR'] = '/tmp/flask_session'
-
+    mail.init_app(app)
     session.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)

@@ -1,9 +1,11 @@
-from flask import render_template, redirect, url_for, flash, session
+from flask import render_template, redirect, url_for, flash, session, request
 from flask_login import login_user, logout_user, current_user, login_required
 from .models import User
 from . import auth_bp
 from .. import db
-from .forms import RegisterForm, LoginForm
+from .functions import send_password_reset_email
+from .forms import RegisterForm, LoginForm, PassResetForm
+import datetime
 
 
 @auth_bp.route('/')
@@ -34,7 +36,7 @@ def register():
         user_to_create = User(name=form.name.data,
                               email=form.email.data,
                               password=form.confirm.data,
-                              role=form.role.data )
+                              role=form.role.data)
         db.session.add(user_to_create)
         db.session.commit()
         flash(f'User created!', category='success')
@@ -80,3 +82,41 @@ def delete_user(user_id):
             return redirect(url_for('auth.users'))
     else:
         return redirect(url_for('main.summary'))
+
+
+@auth_bp.route('/send_pass_reset/<email>', methods=['GET', 'POST'])
+def send_pass_reset(email):
+    if request.method == 'POST':
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.generate_reset_token()
+            db.session.commit()
+
+            send_password_reset_email(user.email, user.reset_token)
+
+            flash(f'Password reset link sent to your {user.email}.', 'info')
+            return redirect(url_for('auth.users'))
+        flash('No user found with that email address.', 'danger')
+
+
+@auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    form = PassResetForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(reset_token=token).first()
+
+        if user and user.reset_token_expiration > datetime.datetime.utcnow():
+            if request.method == 'POST':
+                User.query.filter_by(reset_token=user.reset_token).update(password=request.form.get('new_password'),
+                                                                          reset_token=None,
+                                                                          reset_token_expiration=None)
+                db.session.commit()
+
+                flash('Password reset successful. You can now log in with your new password.', 'success')
+                return redirect(url_for('auth.login'))
+
+            return render_template('auth/pass_reset.html', token=token, form=form)
+
+        flash('Password reset link is invalid or has expired.', 'danger')
+        return redirect(url_for('auth.login'))

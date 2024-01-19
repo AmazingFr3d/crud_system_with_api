@@ -162,7 +162,7 @@ def dash():
         elif data == 'webinar':
             iframe = """
                 <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/e3fa30fe-2009-4857-a7eb-ad2262c893eb/page/XM0mD"
+                    src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
                     frameborder="0" 
                     style="border:0" 
                     allowfullscreen 

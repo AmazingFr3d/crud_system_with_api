@@ -18,7 +18,8 @@ Users
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Role</th>
-            <th scope="col">Status</th>
+            <th scope="col">Delete</th>
+            <th scope="col">Reset Password</th>
         </tr>
         </thead>
         <tbody>
@@ -30,8 +31,15 @@ Users
                 <td>{{ user.role }}</td>
                 <td>
                     <form action="{{ url_for('auth.delete_user', user_id=user.id) }}" method="post">
-                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_method" value="Reset Password">
                         <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+
+                </td>
+                <td>
+                    <form action="{{ url_for('auth.send_pass_reset', email=user.email) }}" method="post">
+                        <input type="hidden" name="_method" value="Reset Password">
+                        <input type="submit" value="Reset Password" class="btn btn-warning">
                     </form>
 
                 </td>
