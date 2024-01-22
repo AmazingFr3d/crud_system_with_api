@@ -91,7 +91,7 @@ def summary():
             refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
             refund_df = refund_df.sort_index(ascending=False)
 
-            return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+            return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
         elif freq == "weekly":
             sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
             sales_df = pd.DataFrame(
@@ -110,7 +110,7 @@ def summary():
             refund_df = refund_df.resample('W').agg({"Amount": "sum", "Count": "count"})
             refund_df = refund_df.sort_index(ascending=False)
 
-            return render_template('dash/dash.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+            return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
     else:
         sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
         sales_df = pd.DataFrame(
