@@ -1,11 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}
-{{db}} Report
+YouTube Funnel Report
 {% endblock %}
 {% block heading %}
-{{db}} Report
+YouTube Funnel Report
 {% endblock %}
 {% block content %}
+
+<main class="form-signin w-100 m-auto">
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag()}}
+    <div class="form-floating p-2 form-group">
+      {{form.type(class="form-control mb-3")}}
+
+      <div class="text-center">
+        {{form.submit(class="w-50 btn btn-primary py-2") }}
+      </div>
+    </div>
+  </form>
+</main>
+
+{% if db == 'Calls' %}
+
 <table class="table table-hover table-bordered mt-3">
 
         <thead>
@@ -122,4 +138,119 @@
 
                 </ul>
               </nav>
+{% elif db == 'Webinar' %}
+
+<table class="table table-hover table-bordered mt-3">
+
+        <thead>
+        <tr class="text-center table-primary text-capitalize">
+            <th colspan=16 scope="col"><h4>{{db}} [{{count}}]</h4></th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col">Week Ending</th>
+            <th scope="col">Impressions</th>
+            <th scope="col">Clicks</th>
+            <th scope="col">CPC</th>
+            <th scope="col">CTR</th>
+            <th scope="col">CPM</th>
+            <th scope="col">Cost</th>
+            <th scope="col">Leads</th>
+            <th scope="col">Cost Per Lead</th>
+            <th scope="col">Checkouts</th>
+            <th scope="col">Sales</th>
+            <th scope="col">Cost Per Sale</th>
+            <th scope="col">Revenue</th>
+            <th scope="col">ROAS</th>
+            <th scope="col">Profit</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if data_set.items|length > 0 %}
+            {% for data in data_set.items: %}
+            <tr>
+                <td>{{ data.week_end }}</td>
+                <td>{{ "{:0,.2f}".format(data.impressions) }}</td>
+                <td>{{ "{:0,.2f}".format(data.clicks) }}</td>
+                <td>
+                    {% if data.clicks > 0 %}
+                        ${{"{:0,.2f}".format(data.cost / data.clicks)}}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>
+                    {% if data.impressions > 0 %}
+                        {{'%0.2f'|format(data.clicks / data.impressions * 100)}}%
+                    {% else %}
+                        0.0%
+                    {% endif %}
+                </td>
+                <td>
+                    {% if data.impressions > 0 %}
+                        ${{'%0.2f'|format(data.cost / data.impressions * 1000)}}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>${{ "{:0,.2f}".format(data.cost) }}</td>
+                <td>{{ "{:0,.2f}".format(data.leads )}}</td>
+                <td>
+                    {% if data.leads > 0 %}
+                        ${{ "{:0,.2f}".format(data.cost / data.leads) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>{{ data.checkouts|int }}</td>
+                <td>${{ "{:0,.2f}".format(data.sales) }}</td>
+                <td>
+                    {% if data.sales > 0 %}
+                        ${{ "{:0,.2f}".format(data.cost / data.sales) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>${{ "{:0,.2f}".format(data.revenue) }}</td>
+                <td>
+                    {% if data.cost > 0 %}
+                        ${{ "{:0,.2f}".format(data.revenue / data.cost) }}
+                    {% else %}
+                        $0.0
+                    {% endif %}
+                </td>
+                <td>${{ "{:0,.2f}".format(data.revenue - data.cost) }}</td>
+
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="14" class="text-center text-danger">No {{db}} found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+<nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if data_set.has_prev %}
+                      <li class="page-item m-2"> <a class="page-link" href="{{ url_for('main.webinar', page=data_set.prev_num) }}"><<</a></li>
+                    {% else %}
+                      <li class="page-item m-2"><a class="page-link btn disabled" href="#"><<</a></li>
+                    {% endif %}
+
+                    <li class="page-item m-2"><a class="page-link btn active" href="#">{{data_set.page}}</a></li>
+
+                    {% if data_set.has_next %}
+                      <li class="page-item m-2"> <a class="page-link" href="{{ url_for('main.webinar', page=data_set.next_num) }}">>></a></li>
+                    {% else %}
+                      <li class="page-item m-2"><a class="page-link btn disabled" href="#">>></a></li>
+                    {% endif %}
+
+                </ul>
+              </nav>
+
+
+
+{% endif %}
+
 {% endblock %}

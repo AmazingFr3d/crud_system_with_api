@@ -4,7 +4,6 @@ from flask_login import login_required
 import pandas as pd
 from datetime import datetime
 
-
 import traceback
 
 from . import main_bp
@@ -26,8 +25,9 @@ def members():
 @login_required
 def leads():
     page = request.args.get('page', 1, type=int)
-    data_set = Members.query.paginate(page=page, per_page=per_page)
-    return render_template('tables/leads.html', data_set=data_set, db="leads")
+    data_set = Leads.query.paginate(page=page, per_page=per_page)
+    count = Leads.query.count()
+    return render_template('tables/leads.html', data_set=data_set, db="leads", count=count)
 
 
 @main_bp.route('/transactions', methods=['GET', 'POST'])
@@ -39,7 +39,8 @@ def transactions():
             page = request.args.get('page', 1, type=int)
             data_set = Transactions.query.paginate(page=page, per_page=per_page)
             count = Transactions.query.count()
-            return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form, count=count)
+            return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form,
+                                   count=count)
 
         elif form.type.data == 'sales':
             page = request.args.get('page', 1, type=int)
@@ -62,8 +63,8 @@ def transactions():
         page = request.args.get('page', 1, type=int)
         data_set = Transactions.query.paginate(page=page, per_page=per_page)
         count = Transactions.query.count()
-        return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form, count=count)
-
+        return render_template('tables/transactions.html', data_set=data_set, db="All Transactions", form=form,
+                               count=count)
 
 
 @main_bp.route('/summary', methods=['GET', 'POST'])
@@ -169,7 +170,7 @@ def dash():
                     andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
                 </iframe>
             """
-        elif data == 'youtube':
+        elif data == 'youtube_call':
             iframe = """
                 <iframe width="100%" height="850" 
                     src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
@@ -185,25 +186,40 @@ def dash():
         return render_template('dash/dash.html', form=form, iframe=iframe, data=data)
 
 
-
 @main_bp.route('/webinar', methods=['GET', 'POST'])
 @login_required
 def webinar():
     page = request.args.get('page', 1, type=int)
     data_set = WebinarFunnelStarts.query.order_by(desc(WebinarFunnelStarts.date)).paginate(page=page, per_page=per_page)
     count = WebinarFunnelStarts.query.count()
-    return render_template('tables/webinar.html', data_set=data_set, db="webinar",count=count)
+    return render_template('tables/webinar.html', data_set=data_set, db="webinar", count=count)
+
 
 @main_bp.route('/youtube', methods=['GET', 'POST'])
 @login_required
 def youtube():
-    page = request.args.get('page', 1, type=int)
-    data_set = YoutubeStats.query.order_by(desc(YoutubeStats.week_end)).paginate(page=page, per_page=per_page)
-    count = YoutubeStats.query.count()
-    return render_template('tables/youtube.html', data_set=data_set, db="Youtube",count=count)
+    form = YoutubeForm()
+    if form.validate_on_submit():
+        if form.type.data == 'calls':
+            page = request.args.get('page', 1, type=int)
+            data_set = YoutubeCalls.query.order_by(desc(YoutubeCalls.week_end)).paginate(page=page, per_page=per_page)
+            count = YoutubeCalls.query.count()
+            return render_template('tables/youtube.html', data_set=data_set, db="Calls", count=count, form=form)
+
+        elif form.type.data == 'webinar':
+            page = request.args.get('page', 1, type=int)
+            data_set = YoutubeWebinar.query.order_by(desc(YoutubeWebinar.week_end)).paginate(page=page,
+                                                                                             per_page=per_page)
+            count = YoutubeCalls.query.count()
+            return render_template('tables/youtube.html', data_set=data_set, db="Webinar", count=count, form=form)
+
+    else:
+        page = request.args.get('page', 1, type=int)
+        data_set = YoutubeCalls.query.order_by(desc(YoutubeCalls.week_end)).paginate(page=page, per_page=per_page)
+        count = YoutubeCalls.query.count()
+        return render_template('tables/youtube.html', data_set=data_set, db="Calls", count=count, form=form)
 
 
-@main_bp.route('/upload', methods=['GET', 'POST'])
 @main_bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -296,14 +312,14 @@ def upload():
                             sales=row["Sales"])
                         db.session.add(webinar_data)
 
-            if data == "youtube":
+            if data == "youtube_call":
                 for index, row in df.iterrows():
                     # Try to load an existing transaction with the same transaction_id
-                    existing_week = YoutubeStats.query.filter_by(week_end=row['Week Ending']).first()
+                    existing_call = YoutubeCalls.query.filter_by(week_end=row['Week Ending']).first()
 
-                    if existing_week:
+                    if existing_call:
                         # Update existing transaction
-                        YoutubeStats.query.filter_by(id=existing_week.id).update({
+                        YoutubeCalls.query.filter_by(id=existing_call.id).update({
                             "week_end": datetime.strptime(row['Week Ending'], '%d/%m/%y'),
                             "impressions": row["impressions"],
                             "clicks": row["Clicks"],
@@ -315,7 +331,7 @@ def upload():
                         })
                     else:
                         # Insert new transaction
-                        youtube = YoutubeStats(
+                        youtube_call = YoutubeCalls(
                             week_end=datetime.strptime(row['Week Ending'], '%d/%m/%y'),
                             impressions=row["Impressions"],
                             clicks=row["Clicks"],
@@ -325,7 +341,69 @@ def upload():
                             sales=row["Sales"],
                             revenue=row["Revenue"],
                         )
-                        db.session.add(youtube)
+                        db.session.add(youtube_call)
+
+            if data == "youtube_webinar":
+                for index, row in df.iterrows():
+                    # Try to load an existing transaction with the same transaction_id
+                    existing_webinar = YoutubeWebinar.query.filter_by(week_end=row['Week Ending']).first()
+
+                    if existing_webinar:
+                        # Update existing transaction
+                        YoutubeCalls.query.filter_by(id=existing_webinar.id).update({
+                            "week_end": datetime.strptime(row['Week Ending'], '%d/%m/%y'),
+                            "impressions": row["impressions"],
+                            "clicks": row["Clicks"],
+                            "cost": row["Cost"],
+                            "leads": row["Leads"],
+                            "checkouts": row["Checkouts"],
+                            "sales": row["Sales"],
+                            "revenue": row["Revenue"],
+                        })
+                    else:
+                        # Insert new transaction
+                        youtube_webinar = YoutubeWebinar(
+                            week_end=datetime.strptime(row['Week Ending'], '%d/%m/%y'),
+                            impressions=row["Impressions"],
+                            clicks=row["Clicks"],
+                            cost=row["Cost"],
+                            leads=row["Leads"],
+                            calls=row["Calls"],
+                            sales=row["Sales"],
+                            revenue=row["Revenue"],
+                        )
+                        db.session.add(youtube_webinar)
+
+            if data == "leads":
+                for index, row in df.iterrows():
+                    # Try to load an existing transaction with the same transaction_id
+                    existing_lead = Leads.query.filter_by(email=row['Email']).first()
+
+                    if existing_lead:
+                        # Update existing transaction
+                        Leads.query.filter_by(id=existing_lead.id).update({
+                            "fname": row['First Name'],
+                            "lname": row["Last Name"],
+                            "email": row["Email"],
+                            "phone": row["First Phone"],
+                            "industry": row["Industry"],
+                            "country": row["Country"],
+                            "state": row["State"],
+                            "stage": row["Stage"],
+                        })
+                    else:
+                        # Insert new transaction
+                        lead = Leads(
+                            fname=row['First Name'],
+                            lname=row["Last Name"],
+                            email=row["Email"],
+                            phone=row["First Phone"],
+                            industry=row["Industry"],
+                            country=row["Country"],
+                            state=row["State"],
+                            stage=row["Stage"],
+                        )
+                        db.session.add(lead)
 
             db.session.commit()
             db.session.flush()

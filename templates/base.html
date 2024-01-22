@@ -13,6 +13,7 @@
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 
     <title>
         {% block title %}
@@ -50,8 +51,9 @@
                 <li><a class="dropdown-item" href="{{url_for('main.members')}}">Member</a></li>
                 <li><a class="dropdown-item" href="{{url_for('main.transactions')}}">Transactions</a></li>
                 <li><a class="dropdown-item" href="{{url_for('main.webinar')}}">Webinar</a></li>
-                <li><a class="dropdown-item" href="{{url_for('main.youtube')}}">Youtube</a></li>
+                <li><a class="dropdown-item" href="{{url_for('main.youtube')}}">Youtube Funnels</a></li>
                 <li><a class="dropdown-item" href="{{url_for('main.leads')}}">New Leads</a></li>
+                <li><a class="dropdown-item" href="{{url_for('main.summary')}}">Sales Summary</a></li>
               </ul>
             </li>
             </ul>

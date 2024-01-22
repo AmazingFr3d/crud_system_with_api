@@ -20,7 +20,8 @@ class UploadForm(FlaskForm):
         ('transactions', 'Transactions'),
         ('members', 'Members'),
         ('webinar', 'Webinar'),
-        ('youtube', 'Youtube')])
+        ('youtube_call', 'Youtube Calls'),
+        ('youtube_webinar', 'Youtube Webinar')])
     submit = SubmitField('Upload')
 
 
@@ -39,4 +40,10 @@ class DashForm(FlaskForm):
 class TransactionForm(FlaskForm):
     type = SelectField('Type', validators=[DataRequired()], choices=[
         ('sales', 'Sales'), ('refunds', 'Refunds'), ('all', 'All')])
+    submit = SubmitField('Switch')
+
+
+class YoutubeForm(FlaskForm):
+    type = SelectField('Type', validators=[DataRequired()], choices=[
+        ('calls', 'Calls'), ('webinar', 'Webinar')])
     submit = SubmitField('Switch')

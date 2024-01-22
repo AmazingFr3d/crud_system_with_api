@@ -46,23 +46,31 @@ class Transactions(db.Model):
 
 
 class Leads(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    lead_id = db.Column(db.Integer)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     email = db.Column(db.String(120))
-    name = db.Column(db.String(120))
-    job_description = db.Column(db.String(120))
+    fname = db.Column(db.String(120))
+    lname = db.Column(db.String(120))
+    phone = db.Column(db.String(20))
+    industry = db.Column(db.String(120))
+    country = db.Column(db.String(120))
+    state = db.Column(db.String(120))
+    stage = db.Column(db.String(120))
 
-    def __init__(self, lead_id, email, name, job_description):
-        self.lead_id = lead_id
+    def __init__(self, email, fname, lname, phone, industry, country, state, stage):
         self.email = email
-        self.name = name
-        self.job_description = job_description
+        self.fname = fname
+        self.lname = lname
+        self.phone = phone
+        self.industry = industry
+        self.country = country
+        self.state = state
+        self.stage = stage
 
 
 class Members(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
+    first_name = db.Column(db.String(50),)
+    last_name = db.Column(db.String(50),)
     email = db.Column(db.String(120))
     program = db.Column(db.String(120))
     access = db.Column(db.String(120))
@@ -75,7 +83,29 @@ class Members(db.Model):
         self.access = access
 
 
-class YoutubeStats(db.Model):
+class YoutubeCalls(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    week_end = db.Column(db.Date)
+    impressions = db.Column(db.Float)
+    clicks = db.Column(db.Float)
+    cost = db.Column(db.Float)
+    leads = db.Column(db.Float)
+    calls = db.Column(db.Float)
+    sales = db.Column(db.Float)
+    revenue = db.Column(db.Float)
+
+    def __init__(self, week_end, impressions, clicks, cost, leads, calls, sales, revenue):
+        self.week_end = week_end
+        self.impressions = impressions
+        self.clicks = clicks
+        self.cost = cost
+        self.leads = leads
+        self.calls = calls
+        self.sales = sales
+        self.revenue = revenue
+
+
+class YoutubeWebinar(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     week_end = db.Column(db.Date)
     impressions = db.Column(db.Float)
