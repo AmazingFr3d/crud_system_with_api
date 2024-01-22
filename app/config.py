@@ -13,6 +13,6 @@ class Config:
     MAIL_PORT = 465
     MAIL_USE_SSL = False
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'techredy@gmail.com'
-    MAIL_PASSWORD = 'Fr3d4ali4i'
-    MAIL_DEFAULT_SENDER = 'techredy@gmail.com'
+    MAIL_USERNAME = ''
+    MAIL_PASSWORD = ''
+    MAIL_DEFAULT_SENDER = ''
