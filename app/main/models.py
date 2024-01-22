@@ -1,6 +1,5 @@
 from .. import db
 
-
 class WebinarFunnelStarts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
@@ -112,16 +111,16 @@ class YoutubeWebinar(db.Model):
     clicks = db.Column(db.Float)
     cost = db.Column(db.Float)
     leads = db.Column(db.Float)
-    calls = db.Column(db.Float)
+    checkouts = db.Column(db.Float)
     sales = db.Column(db.Float)
     revenue = db.Column(db.Float)
 
-    def __init__(self, week_end, impressions, clicks, cost, leads, calls, sales, revenue):
+    def __init__(self, week_end, impressions, clicks, cost, leads, checkouts, sales, revenue):
         self.week_end = week_end
         self.impressions = impressions
         self.clicks = clicks
         self.cost = cost
         self.leads = leads
-        self.calls = calls
+        self.checkouts = checkouts
         self.sales = sales
         self.revenue = revenue

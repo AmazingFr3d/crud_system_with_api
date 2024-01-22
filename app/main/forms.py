@@ -33,7 +33,7 @@ class SumForm(FlaskForm):
 
 class DashForm(FlaskForm):
     dash = SelectField('dash', validators=[DataRequired()], choices=[
-        ('sales', 'Sales'), ('webinar', 'Webinar'), ('youtube', 'Youtube')])
+        ('sales', 'Sales'), ('webinar', 'Webinar'), ('youtube_calls', 'Youtube Calls'), ('youtube_webinar', 'Youtube Webinar')])
     submit = SubmitField('Switch')
 
 

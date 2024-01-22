@@ -71,9 +71,54 @@ def transactions():
 @login_required
 def summary():
     form = SumForm()
-    if form.is_submitted():
-        freq = form.freq.data
-        if freq == "monthly":
+    try:
+        if form.is_submitted():
+            freq = form.freq.data
+            if freq == "monthly":
+                sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
+                sales_df = pd.DataFrame(
+                    [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in
+                     sales])
+                sales_df.Date = pd.to_datetime(sales_df.Date)
+                sales_df.set_index('Date', inplace=True)
+                sales_df = sales_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
+                sales_df = sales_df.sort_index(ascending=False)
+
+                refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                                       Transactions.transaction_type == "Chargeback")).all()
+                refund_df = pd.DataFrame(
+                    [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in
+                     refund])
+                refund_df.Date = pd.to_datetime(refund_df.Date)
+                refund_df.set_index('Date', inplace=True)
+                refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
+                refund_df = refund_df.sort_index(ascending=False)
+
+                return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions",
+                                       form=form)
+            elif freq == "weekly":
+                sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
+                sales_df = pd.DataFrame(
+                    [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in
+                     sales])
+                sales_df.Date = pd.to_datetime(sales_df.Date)
+                sales_df.set_index('Date', inplace=True)
+                sales_df = sales_df.resample('W').agg({"Amount": "sum", "Count": "count"})
+                sales_df = sales_df.sort_index(ascending=False)
+
+                refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
+                                                       Transactions.transaction_type == "Chargeback")).all()
+                refund_df = pd.DataFrame(
+                    [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in
+                     refund])
+                refund_df.Date = pd.to_datetime(refund_df.Date)
+                refund_df.set_index('Date', inplace=True)
+                refund_df = refund_df.resample('W').agg({"Amount": "sum", "Count": "count"})
+                refund_df = refund_df.sort_index(ascending=False)
+
+                return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions",
+                                       form=form)
+        else:
             sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
             sales_df = pd.DataFrame(
                 [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
@@ -92,68 +137,34 @@ def summary():
             refund_df = refund_df.sort_index(ascending=False)
 
             return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
-        elif freq == "weekly":
-            sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
-            sales_df = pd.DataFrame(
-                [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
-            sales_df.Date = pd.to_datetime(sales_df.Date)
-            sales_df.set_index('Date', inplace=True)
-            sales_df = sales_df.resample('W').agg({"Amount": "sum", "Count": "count"})
-            sales_df = sales_df.sort_index(ascending=False)
 
-            refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
-                                                   Transactions.transaction_type == "Chargeback")).all()
-            refund_df = pd.DataFrame(
-                [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
-            refund_df.Date = pd.to_datetime(refund_df.Date)
-            refund_df.set_index('Date', inplace=True)
-            refund_df = refund_df.resample('W').agg({"Amount": "sum", "Count": "count"})
-            refund_df = refund_df.sort_index(ascending=False)
-
-            return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
-    else:
-        sales = Transactions.query.filter(or_(Transactions.transaction_type == "Sale")).all()
-        sales_df = pd.DataFrame(
-            [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in sales])
-        sales_df.Date = pd.to_datetime(sales_df.Date)
-        sales_df.set_index('Date', inplace=True)
-        sales_df = sales_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
-        sales_df = sales_df.sort_index(ascending=False)
-
-        refund = Transactions.query.filter(or_(Transactions.transaction_type == "Refund",
-                                               Transactions.transaction_type == "Chargeback")).all()
-        refund_df = pd.DataFrame(
-            [{'Date': trans.transaction_date, "Amount": trans.amount, "Count": trans.product} for trans in refund])
-        refund_df.Date = pd.to_datetime(refund_df.Date)
-        refund_df.set_index('Date', inplace=True)
-        refund_df = refund_df.resample('MS').agg({"Amount": "sum", "Count": "count"})
-        refund_df = refund_df.sort_index(ascending=False)
-
-        return render_template('dash/summary.html', sales=sales_df, refunds=refund_df, db="transactions", form=form)
+    except:
+        return render_template('dash/summary.html', db="transactions", form=form)
 
 
 @main_bp.route('/dash', methods=['GET', 'POST'])
 @main_bp.route('/home', methods=['GET', 'POST'])
 @main_bp.route('/', methods=['GET', 'POST'])
+@login_required
 def dash():
     form = DashForm()
     data = "sales"
     iframe = f"""
-                    <iframe width="100%" height="850" 
-                        src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
-                        frameborder="0" 
-                        style="border:0" 
-                        allowfullscreen 
-                        andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                    </iframe>
-                """
+                <iframe width="100%" height="850" 
+                    src="https://lookerstudio.google.com/embed/reporting/e5b15a4d-41dd-418e-971b-5c406f5fdc1e/page/pSVnD"
+                    frameborder="0" 
+                    style="border:0" 
+                    allowfullscreen 
+                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                </iframe>
+            """
     if form.validate_on_submit():
         data = form.dash.data
 
         if data == 'sales':
             iframe = """
                 <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
+                    src="https://lookerstudio.google.com/embed/reporting/e5b15a4d-41dd-418e-971b-5c406f5fdc1e/page/pSVnD"
                     frameborder="0" 
                     style="border:0" 
                     allowfullscreen 
@@ -163,17 +174,27 @@ def dash():
         elif data == 'webinar':
             iframe = """
                 <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
+                    src="https://lookerstudio.google.com/embed/reporting/06791da2-f938-400a-b87a-406597382885/page/XM0mD"
                     frameborder="0" 
                     style="border:0" 
                     allowfullscreen 
                     andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
                 </iframe>
             """
-        elif data == 'youtube_call':
+        elif data == 'youtube_calls':
             iframe = """
                 <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/c4ba13f0-14a9-4e7f-9f0e-a54058e41204/page/XM0mD"
+                    src="https://lookerstudio.google.com/embed/reporting/57445007-3b4a-43b9-8e5e-83e78169b08d/page/XM0mD""
+                    frameborder="0" 
+                    style="border:0" 
+                    allowfullscreen 
+                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                </iframe>
+            """
+        elif data == 'youtube_webinar':
+            iframe = """
+                <iframe width="100%" height="850" 
+                    src="https://lookerstudio.google.com/embed/reporting/225e24db-59b8-41aa-8b3b-c5302cf29026/page/XM0mD"
                     frameborder="0" 
                     style="border:0" 
                     allowfullscreen 
@@ -368,7 +389,7 @@ def upload():
                             clicks=row["Clicks"],
                             cost=row["Cost"],
                             leads=row["Leads"],
-                            calls=row["Calls"],
+                            checkouts=row["Checkouts"],
                             sales=row["Sales"],
                             revenue=row["Revenue"],
                         )
