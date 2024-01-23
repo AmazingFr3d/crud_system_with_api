@@ -28,7 +28,7 @@ def login():
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def register():
     # if current_user.role == 'admin':
     form = RegisterForm()
