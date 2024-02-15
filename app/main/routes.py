@@ -9,6 +9,7 @@ import traceback
 from . import main_bp
 from .forms import *
 from .models import *
+from ..helpers import dash_embeds as de
 
 per_page = 50
 
@@ -149,58 +150,12 @@ def summary():
 def dash():
     form = DashForm()
     data = "sales"
-    iframe = f"""
-                <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/e5b15a4d-41dd-418e-971b-5c406f5fdc1e/page/pSVnD"
-                    frameborder="0" 
-                    style="border:0" 
-                    allowfullscreen 
-                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                </iframe>
-            """
+    iframe = de(data)
+
     if form.validate_on_submit():
         data = form.dash.data
+        iframe = de(data)
 
-        if data == 'sales':
-            iframe = """
-                <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/e5b15a4d-41dd-418e-971b-5c406f5fdc1e/page/pSVnD"
-                    frameborder="0" 
-                    style="border:0" 
-                    allowfullscreen 
-                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                </iframe>
-            """
-        elif data == 'webinar':
-            iframe = """
-                <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/06791da2-f938-400a-b87a-406597382885/page/XM0mD"
-                    frameborder="0" 
-                    style="border:0" 
-                    allowfullscreen 
-                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                </iframe>
-            """
-        elif data == 'youtube_calls':
-            iframe = """
-                <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/57445007-3b4a-43b9-8e5e-83e78169b08d/page/XM0mD""
-                    frameborder="0" 
-                    style="border:0" 
-                    allowfullscreen 
-                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                </iframe>
-            """
-        elif data == 'youtube_webinar':
-            iframe = """
-                <iframe width="100%" height="850" 
-                    src="https://lookerstudio.google.com/embed/reporting/225e24db-59b8-41aa-8b3b-c5302cf29026/page/XM0mD"
-                    frameborder="0" 
-                    style="border:0" 
-                    allowfullscreen 
-                    andbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                </iframe>
-            """
         return render_template('dash/dash.html', form=form, iframe=iframe, data=data)
 
     else:
