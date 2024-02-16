@@ -46,6 +46,7 @@ class DashForm(FlaskForm):
         ('emc_linkedin', 'EMC LinkedIn'),
         ('tiktok', 'TikTok'),
         ('emc_tiktok', 'EMC TikTok'),
+        ('youtube', 'YouTube'),
     ])
     submit = SubmitField('Switch')
 

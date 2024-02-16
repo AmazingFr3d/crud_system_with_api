@@ -24,6 +24,7 @@ def dash_embeds(name: str):
         'linkedin': iframe_const("https://lookerstudio.google.com/embed/reporting/0249b245-1afc-4c5b-a503-fc938bb57916/page/wGHpD"),
         'emc_linkedin': iframe_const("https://lookerstudio.google.com/embed/reporting/05b1a1f6-cdce-4511-8e1f-9173352e6d16/page/wGHpD"),
         'tiktok': iframe_const("https://lookerstudio.google.com/embed/reporting/9f45899f-ad3b-4427-8d25-cb155c972dbb/page/wGHpD"),
-        'emc_tikok': iframe_const("https://lookerstudio.google.com/embed/reporting/0bd7c906-e162-49b5-a2ea-8105a1ea11f0/page/wGHpD"),
+        'emc_tiktok': iframe_const("https://lookerstudio.google.com/embed/reporting/0bd7c906-e162-49b5-a2ea-8105a1ea11f0/page/wGHpD"),
+        'youtube': iframe_const("https://lookerstudio.google.com/embed/reporting/4bc9eb18-89c5-4c97-94c3-9635f5b762ef/page/jdLp"),
         }
     return embeds.get(name)
